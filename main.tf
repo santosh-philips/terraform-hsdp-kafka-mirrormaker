@@ -25,10 +25,6 @@ resource "hsdp_container_host" "kafka_connect" {
   bastion_host = var.bastion_host
   user         = var.user
   private_key  = var.private_key
-
-  commands = [
-      "docker volume create kafka"
-  ]
 }
 
 resource "hsdp_container_host_exec" "cluster" {
@@ -43,7 +39,7 @@ resource "hsdp_container_host_exec" "cluster" {
   host         = element(hsdp_container_host.kafka_connect.*.private_ip, count.index)
   user         = var.user
   private_key  = var.private_key
-  
+
   file {
     source      = "${path.module}/scripts/bootstrap-cluster.sh"
     destination = "/home/${var.user}/bootstrap-cluster.sh"
@@ -58,7 +54,7 @@ resource "hsdp_container_host_exec" "cluster" {
     source      = var.key_store.keystore
     destination = "/home/${var.user}/mm.keystore.jks"
   }
-  
+
   file {
     source      = var.mm2_properties
     destination = "/home/${var.user}/mm2.properties"
